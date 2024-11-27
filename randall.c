@@ -22,60 +22,14 @@
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
-#include <cpuid.h>
 #include <errno.h>
-#include <immintrin.h>
 #include <limits.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "options.h"
-
-/* Hardware implementation.  */
-
-/* Description of the current CPU.  */
-struct cpuid {
-    unsigned eax, ebx, ecx, edx;
-};
-
-/* Return information about the CPU.  See <http://wiki.osdev.org/CPUID>.  */
-// Returns a struct cpuid
-static struct cpuid cpuid(unsigned int leaf, unsigned int subleaf) {
-    struct cpuid result;
-    asm("cpuid"
-        : "=a"(result.eax), "=b"(result.ebx), "=c"(result.ecx), "=d"(result.edx)
-        : "a"(leaf), "c"(subleaf)); // Executes the cpuid assembly instruction, with leaf and
-                                    // subleaf as paramenters, and outputting results to result.e_x
-    return result;
-}
-
-/* Return true if the CPU supports the RDRAND instruction.  */
-static _Bool rdrand_supported(void) {
-    struct cpuid extended = cpuid(1, 0);
-    return (extended.ecx & bit_RDRND) != 0;
-}
-
-/* Initialize the hardware rand64 implementation.  */
-static void hardware_rand64_init(void) {}
-
-/* Return a random value, using hardware operations.  */
-static unsigned long long hardware_rand64(void) {
-    unsigned long long int x;
-
-    /* Work around GCC bug 107565
-       <https://gcc.gnu.org/bugzilla/show_bug.cgi?id=107565>.  */
-    x = 0;
-
-    while (!_rdrand64_step(&x))
-        continue;
-    return x;
-}
-
-/* Finalize the hardware rand64 implementation.  */
-static void hardware_rand64_fini(void) {}
-
-
+#include "rand64-hw.h"
 
 /* Software implementation.  */
 

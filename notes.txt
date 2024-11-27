@@ -6,3 +6,6 @@ check to see if the length of the output of randall matches what is expected.
 
 To start refactoring, I created options.c and options.h to handle command line arguments, currently of which only reading nbytes exists.
 I moved the code that reads nbytes to options.c and options.h and edited the Makefile to update the compilation and linking.
+
+I then refactored the hardware randomization code to rand64-hw.c and rand64-hw.h, adding headers to the new refactoring files and removing
+some from randall.c. I then recompiled and linked using make and tested.
