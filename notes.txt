@@ -3,3 +3,6 @@ I added some comments to help with my understanding.
 
 I then read through the Makefile and got a general understanding of it, then proceeded to add a check rule that performs a simple
 check to see if the length of the output of randall matches what is expected.
+
+To start refactoring, I created options.c and options.h to handle command line arguments, currently of which only reading nbytes exists.
+I moved the code that reads nbytes to options.c and options.h and edited the Makefile to update the compilation and linking.

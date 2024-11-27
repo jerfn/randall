@@ -30,8 +30,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "options.h"
-
 /* Hardware implementation.  */
 
 /* Description of the current CPU.  */
@@ -114,9 +112,18 @@ static bool writebytes(unsigned long long x, int nbytes) {
 /* Main program, which outputs N bytes of random data.  */
 int main(int argc, char **argv) {
     /* Check arguments.  */
-    long long nbytes = get_nbytes(argc, argv);
-
-    if (nbytes == -1) {
+    bool valid = false;
+    long long nbytes;
+    if (argc == 2) {
+        char *endptr;
+        errno = 0;
+        nbytes = strtoll(argv[1], &endptr, 10);
+        if (errno)
+            perror(argv[1]);
+        else
+            valid = !*endptr && 0 <= nbytes;
+    }
+    if (!valid) {
         fprintf(stderr, "%s: usage: %s NBYTES\n", argv[0], argv[0]);
         return 1;
     }
