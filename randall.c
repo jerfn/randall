@@ -36,6 +36,7 @@
 struct cpuid { unsigned eax, ebx, ecx, edx; };
 
 /* Return information about the CPU.  See <http://wiki.osdev.org/CPUID>.  */
+// Returns a struct cpuid
 static struct cpuid
 cpuid (unsigned int leaf, unsigned int subleaf)
 {
@@ -43,7 +44,7 @@ cpuid (unsigned int leaf, unsigned int subleaf)
   asm ("cpuid"
        : "=a" (result.eax), "=b" (result.ebx),
 	 "=c" (result.ecx), "=d" (result.edx)
-       : "a" (leaf), "c" (subleaf));
+       : "a" (leaf), "c" (subleaf)); // Executes the cpuid assembly instruction, with leaf and subleaf as paramenters, and outputting results to result.e_x
   return result;
 }
 
@@ -119,12 +120,12 @@ static bool
 writebytes (unsigned long long x, int nbytes)
 {
   do
-    {
-      if (putchar (x) < 0)
-	return false;
-      x >>= CHAR_BIT;
-      nbytes--;
-    }
+  {
+    if (putchar (x) < 0)
+      return false;
+    x >>= CHAR_BIT;
+    nbytes--;
+  }
   while (0 < nbytes);
 
   return true;
@@ -138,20 +139,20 @@ main (int argc, char **argv)
   bool valid = false;
   long long nbytes;
   if (argc == 2)
-    {
-      char *endptr;
-      errno = 0;
-      nbytes = strtoll (argv[1], &endptr, 10);
-      if (errno)
-	perror (argv[1]);
-      else
-	valid = !*endptr && 0 <= nbytes;
-    }
+  {
+    char *endptr;
+    errno = 0;
+    nbytes = strtoll (argv[1], &endptr, 10);
+    if (errno)
+      perror (argv[1]);
+    else
+      valid = !*endptr && 0 <= nbytes;
+  }
   if (!valid)
-    {
-      fprintf (stderr, "%s: usage: %s NBYTES\n", argv[0], argv[0]);
-      return 1;
-    }
+  {
+    fprintf (stderr, "%s: usage: %s NBYTES\n", argv[0], argv[0]);
+    return 1;
+  }
 
   /* If there's no work to do, don't worry about which library to use.  */
   if (nbytes == 0)
@@ -159,47 +160,50 @@ main (int argc, char **argv)
 
   /* Now that we know we have work to do, arrange to use the
      appropriate library.  */
+  // Function pointers
   void (*initialize) (void);
   unsigned long long (*rand64) (void);
   void (*finalize) (void);
+
+  // Set function pointers
   if (rdrand_supported ())
-    {
-      initialize = hardware_rand64_init;
-      rand64 = hardware_rand64;
-      finalize = hardware_rand64_fini;
-    }
+  {
+    initialize = hardware_rand64_init;
+    rand64 = hardware_rand64;
+    finalize = hardware_rand64_fini;
+  }
   else
-    {
-      initialize = software_rand64_init;
-      rand64 = software_rand64;
-      finalize = software_rand64_fini;
-    }
+  {
+    initialize = software_rand64_init;
+    rand64 = software_rand64;
+    finalize = software_rand64_fini;
+  }
 
   initialize ();
   int wordsize = sizeof rand64 ();
   int output_errno = 0;
 
   do
-    {
-      unsigned long long x = rand64 ();
-      int outbytes = nbytes < wordsize ? nbytes : wordsize;
-      if (!writebytes (x, outbytes))
-	{
-	  output_errno = errno;
-	  break;
-	}
-      nbytes -= outbytes;
-    }
+  {
+    unsigned long long x = rand64 ();
+    int outbytes = nbytes < wordsize ? nbytes : wordsize;
+    if (!writebytes (x, outbytes))
+	  {
+      output_errno = errno;
+      break;
+	  }
+    nbytes -= outbytes;
+  }
   while (0 < nbytes);
 
   if (fclose (stdout) != 0)
     output_errno = errno;
 
   if (output_errno)
-    {
-      errno = output_errno;
-      perror ("output");
-    }
+  {
+    errno = output_errno;
+    perror ("output");
+  }
 
   finalize ();
   return !!output_errno;

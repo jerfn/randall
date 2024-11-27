@@ -1,0 +1,5 @@
+The first thing I did was read through randall.c to get a general understanding of the structure and what each part of the code did.
+I added some comments to help with my understanding.
+
+I then read through the Makefile and got a general understanding of it, then proceeded to add a check rule that performs a simple
+check to see if the length of the output of randall matches what is expected.

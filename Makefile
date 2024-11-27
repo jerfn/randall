@@ -47,7 +47,11 @@ randall-submission.$(TAREXT): $(submission-files)
 repository-tarball:
 	$(TAR) -czf randall-git.tgz .git
 
-.PHONY: default clean assignment submission-tarball repository-tarball
+.PHONY: default clean assignment submission-tarball repository-tarball check
 
 clean:
 	rm -f *.o *.$(TAREXT) randall
+
+check: randall
+	@echo "Running output length check"
+	@./randall 20 | wc -c | (grep -q "^20$$" && echo "PASSED") || (echo "FAILED" && false)
