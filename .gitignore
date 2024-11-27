@@ -8,3 +8,4 @@ randall
 .DS_Store
 settings.json
 .vscode
+.clang-format
