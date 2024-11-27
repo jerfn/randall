@@ -11,3 +11,5 @@ edited randall.c to handle errors from reading nbytes.
 I then refactored the hardware randomization code to rand64-hw.c and rand64-hw.h, adding headers to the new refactoring files and removing
 some from randall.c. I then recompiled and linked using make and tested. The same process was done to refactor the software randomization 
 to rand64-sw.c and rand64-sw.h.
+
+I then refactored writebytes to output.c and output.h, again remaking and testing.

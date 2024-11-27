@@ -27,6 +27,7 @@
 #include <stdlib.h>
 
 #include "options.h"
+#include "output.h"
 #include "rand64-hw.h"
 #include "rand64-sw.h"
 
