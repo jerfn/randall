@@ -49,10 +49,13 @@ randall-submission.$(TAREXT): $(submission-files)
 repository-tarball:
 	$(TAR) -czf randall-git.tgz .git
 
-.PHONY: default clean assignment submission-tarball repository-tarball check
+.PHONY: default clean assignment submission-tarball repository-tarball check valgrind
 
 clean:
 	rm -f *.o *.$(TAREXT) randall
+
+valgrind: randall
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose ./randall 100
 
 check: randall
 	@echo "Running output length check"

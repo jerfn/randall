@@ -5,6 +5,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+
 
 long long get_nbytes(int argc, char **argv);
 

@@ -22,17 +22,45 @@
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
-#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "options.h"
 #include "output.h"
-#include "rand64-hw.h"
-#include "rand64-sw.h"
 
 /* Main program, which outputs N bytes of random data.  */
 int main(int argc, char **argv) {
+    char *input = "rdrand"; // rdrand (hardware rand64) by default
+    char *output = "stdio"; // stdio by default
+    int c;
+
+    opterr = 0;
+
+    while ((c = getopt(argc, argv, ":i:o:")) != -1) {
+        switch (c) {
+            case 'i':
+                input = optarg;
+                break;
+            case 'o':
+                output = optarg;
+                break;
+            case ':':
+                fprintf(stderr, "Option -%c requires an argument\n", optopt);
+                return 1;
+            case '?':
+                fprintf (stderr, "Unknown option `-%c'.\n", optopt);
+                return 1;
+            default:
+                abort();
+        }
+    }
+
+    // printf("Input: %s\nOutput: %s\n", input, output);
+
+    // return 0;
+
+
     /* Check arguments.  */
     long long nbytes = get_nbytes(argc, argv);
 
@@ -45,46 +73,5 @@ int main(int argc, char **argv) {
     if (nbytes == 0)
         return 0;
 
-    /* Now that we know we have work to do, arrange to use the
-       appropriate library.  */
-    // Function pointers
-    void (*initialize)(void);
-    unsigned long long (*rand64)(void);
-    void (*finalize)(void);
-
-    // Set function pointers
-    if (rdrand_supported()) {
-        initialize = hardware_rand64_init;
-        rand64 = hardware_rand64;
-        finalize = hardware_rand64_fini;
-    } else {
-        initialize = software_rand64_init;
-        rand64 = software_rand64;
-        finalize = software_rand64_fini;
-    }
-
-    initialize();
-    int wordsize = sizeof rand64();
-    int output_errno = 0;
-
-    do {
-        unsigned long long x = rand64();
-        int outbytes = nbytes < wordsize ? nbytes : wordsize;
-        if (!writebytes(x, outbytes)) {
-            output_errno = errno;
-            break;
-        }
-        nbytes -= outbytes;
-    } while (0 < nbytes);
-
-    if (fclose(stdout) != 0)
-        output_errno = errno;
-
-    if (output_errno) {
-        errno = output_errno;
-        perror("output");
-    }
-
-    finalize();
-    return !!output_errno;
+    return handleoutput(input, output, nbytes);
 }

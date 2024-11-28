@@ -13,3 +13,8 @@ some from randall.c. I then recompiled and linked using make and tested. The sam
 to rand64-sw.c and rand64-sw.h.
 
 I then refactored writebytes to output.c and output.h, again remaking and testing.
+
+To start handling the new options, I added a while loop in main using getopt that parses options and sets 2 strings for input and output
+respectively. I edited the output function to accept these string options (so it can decide what input and output options to use). Currently,
+only the rdrand input option is implemented, as the other features will be implemented in the future. Additionally, options.c was updated to 
+work with getopt and read nbytes after getopt has parsed all options.
