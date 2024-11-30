@@ -18,3 +18,7 @@ To start handling the new options, I added a while loop in main using getopt tha
 respectively. I edited the output function to accept these string options (so it can decide what input and output options to use). Currently,
 only the rdrand input option is implemented, as the other features will be implemented in the future. Additionally, options.c was updated to 
 work with getopt and read nbytes after getopt has parsed all options.
+
+Next, I implemented the /F option for input, adding functions in rand64-sw.h and rand64-sw.c to set a user specified file as the input for 
+randomness. I then used the conditional I had in the handleoutput function in output.c to set the file when the -i /F is used, and added 
+appropriate error handling. I then tested this new functionality and also make sure old functionality was not affected.

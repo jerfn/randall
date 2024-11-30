@@ -9,6 +9,11 @@
 /* Initialize the software rand64 implementation.  */
 void software_rand64_init(void);
 
+void set_file(char *input);
+
+/* Initialize the software rand64 implementation with specific file as input */
+void software_rand64_init_file(void);
+
 /* Return a random value, using software operations.  */
 unsigned long long software_rand64(void);
 

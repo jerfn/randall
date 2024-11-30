@@ -58,11 +58,10 @@ int main(int argc, char **argv) {
 
     // printf("Input: %s\nOutput: %s\n", input, output);
 
-    // return 0;
-
-
     /* Check arguments.  */
     long long nbytes = get_nbytes(argc, argv);
+
+    // printf("%d\n", nbytes);
 
     if (nbytes == -1) {
         fprintf(stderr, "%s: usage: %s NBYTES\n", argv[0], argv[0]);
