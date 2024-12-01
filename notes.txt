@@ -29,3 +29,34 @@ to generate pseudorandom numbers. I compiled and tested afterwards.
 Finally, I implemented the N option for output. I looked up the write syscall, malloc, and free, and borrowed code from the normal output and 
 writebytes to do my implementation of the N option. It took some debugging, but I tested edge cases and checked for potential memory leaks using 
 valgrind, and was able to verify everything worked as expected.
+
+Timing:
+
+time dd if=/dev/urandom ibs=8192 obs=8192 count=16384 >/dev/null
+16384+0 records in
+16384+0 records out
+134217728 bytes (134 MB, 128 MiB) copied, 0.515864 s, 260 MB/s
+
+real    0m0.518s
+user    0m0.020s
+sys     0m0.496s
+
+time ./randall 133562368 >/dev/null
+real    0m6.317s
+user    0m6.266s
+sys     0m0.026s
+
+time ./randall 133562368 | cat >/dev/null
+real    0m6.293s
+user    0m6.147s
+sys     0m0.275s
+
+time ./randall 133562368 >rand.data
+real    0m6.304s
+user    0m6.031s
+sys     0m0.149s
+
+time ./randall -i /dev/urandom 133562368 >/dev/null
+real    0m4.433s
+user    0m3.906s
+sys     0m0.511s
