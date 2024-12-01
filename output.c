@@ -85,6 +85,62 @@ int handleoutput(char *input, char *output, int nbytes) {
         }        
     } else {
         // Handle -o N option
+        if (!output || *output == '\0')
+            return 1; // NULL or empty string is not a valid positive integer
+
+        char *endptr;
+        errno = 0;
+        long long N = strtoll(output, &endptr, 10); // Read N
+
+        // Check for errors
+        if (errno != 0 || *endptr != '\0' || N <= 0) {
+            perror("strtoll read N");
+            return 1; // Conversion failed or there are leftover characters or N is not positive
+        }
+
+
+
+        // Create buffer
+        char *buf = (char *)malloc(nbytes);
+
+        if (!buf) {
+            perror("malloc");
+            return 1;
+        }
+
+        char *current = buf; // Pointer to the current position in the buffer
+        int bytes_left_to_populate = nbytes;
+
+        // Loop to populate buffer
+        do {
+            unsigned long long x = rand64();
+            int bytes_populate = bytes_left_to_populate < 8 ? bytes_left_to_populate : 8;
+
+            memcpy(current, &x, bytes_populate); // Copy bytes (binary representation)
+            current += bytes_populate;           // Move the pointer forward
+            
+            bytes_left_to_populate -= bytes_populate;
+
+            // printf("rand num: %x, buffer: %x\n", x, buf);
+
+        } while (0 < bytes_left_to_populate);
+
+
+
+        // Write bytes, N at a time
+        do {
+            int bytes_to_write = nbytes < N ? nbytes : N;
+            long bytes_written = write(1, buf, bytes_to_write);
+
+            if (bytes_written == -1) {
+                perror("write");
+                free(buf);
+                return 1;
+            }
+            nbytes -= bytes_written;
+        } while (0 < nbytes);
+
+        free(buf);
     }
 
     finalize();

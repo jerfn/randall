@@ -25,3 +25,7 @@ appropriate error handling. I then tested this new functionality and also make s
 
 After that, I implemented the lrand48_r option by creating new functions in rand64-sw that calls the mrand48_r function of the GNU C library 
 to generate pseudorandom numbers. I compiled and tested afterwards.
+
+Finally, I implemented the N option for output. I looked up the write syscall, malloc, and free, and borrowed code from the normal output and 
+writebytes to do my implementation of the N option. It took some debugging, but I tested edge cases and checked for potential memory leaks using 
+valgrind, and was able to verify everything worked as expected.

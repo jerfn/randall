@@ -55,7 +55,7 @@ clean:
 	rm -f *.o *.$(TAREXT) randall
 
 valgrind: randall
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose ./randall 100
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose ./randall -o 12 100
 
 check: randall
 	@echo "Running output length check"
