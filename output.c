@@ -44,6 +44,9 @@ int handleoutput(char *input, char *output, int nbytes) {
 
     } else if (strcmp(input, "lrand48_r") == 0) {
         // Handles lrand48_r case
+        initialize = lrand_init;
+        rand64 = lrand_rand64;
+        finalize = lrand_fini;
     } else {
         // Handle /F case.
         if (strncmp(input, "/", 1) == 0) {

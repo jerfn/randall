@@ -35,3 +35,23 @@ unsigned long long software_rand64(void) {
 
 /* Finalize the software rand64 implementation.  */
 void software_rand64_fini(void) { fclose(urandstream); }
+
+
+/* lrand48_r implementation.  */
+
+static struct drand48_data buffer;
+
+void lrand_init(void) {
+    srand48_r(time(NULL), &buffer);
+}
+
+unsigned long long lrand_rand64(void) {
+    long result1, result2;
+
+    mrand48_r(&buffer, &result1);
+    mrand48_r(&buffer, &result2);
+
+    return ((unsigned long long) result1 << 32) + (unsigned long long) result2;
+}
+
+void lrand_fini(void) {}

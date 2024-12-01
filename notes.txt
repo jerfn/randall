@@ -22,3 +22,6 @@ work with getopt and read nbytes after getopt has parsed all options.
 Next, I implemented the /F option for input, adding functions in rand64-sw.h and rand64-sw.c to set a user specified file as the input for 
 randomness. I then used the conditional I had in the handleoutput function in output.c to set the file when the -i /F is used, and added 
 appropriate error handling. I then tested this new functionality and also make sure old functionality was not affected.
+
+After that, I implemented the lrand48_r option by creating new functions in rand64-sw that calls the mrand48_r function of the GNU C library 
+to generate pseudorandom numbers. I compiled and tested afterwards.

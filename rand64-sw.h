@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 /* Software implementation.  */
 
@@ -19,5 +20,15 @@ unsigned long long software_rand64(void);
 
 /* Finalize the software rand64 implementation.  */
 void software_rand64_fini(void);
+
+
+
+/* lrand48_r implementation.  */
+
+void lrand_init(void);
+
+unsigned long long lrand_rand64(void);
+
+void lrand_fini(void);
 
 #endif /* RAND64_SW_H */
